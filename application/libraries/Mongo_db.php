@@ -14,11 +14,10 @@
  * @version		Version 0.3
  */
 
-class Mongo_db 
-{
+class Mongo_db {
 	
 	private $CI;
-	private $config_file = 'mongo_db';
+	private $config_file = 'mongo';
 	
 	private $connection;
 	private $db;
@@ -48,10 +47,8 @@ class Mongo_db
 	 *	Generate the connection string and establish a connection to the MongoDB.
 	 */
 	
-	public function __construct()
-	{
-		if(!class_exists('Mongo'))
-		{
+	public function __construct(){
+		if(!class_exists('Mongo')){
 			show_error("The MongoDB PECL extension has not been installed or enabled", 500);
 		}
 		$this->CI =& get_instance();
@@ -67,20 +64,16 @@ class Mongo_db
 	 *	Switch from default database to a different db
 	 */
 	
-	public function switch_db($database = '')
-	{
-		if(empty($database))
-		{
+	public function switch_db($database = '') {
+		if(empty($database)) {
 			show_error("To switch MongoDB databases, a new database name must be specified", 500);
 		}
 		$this->dbname = $database;
-		try
-		{
+		try	{
 			$this->db = $this->connection->{$this->dbname};
 			return(TRUE);
 		}
-		catch(Exception $e)
-		{
+		catch(Exception $e)	{
 			show_error("Unable to switch Mongo Databases: {$e->getMessage()}", 500);
 		}
 	}
@@ -98,29 +91,22 @@ class Mongo_db
 	 *	@usage: $this->mongo_db->select(array('foo', 'bar'))->get('foobar');
 	 */
 	 
-	public function select($includes = array(), $excludes = array())
-	{
-	 	if(!is_array($includes))
-	 	{
+	public function select($includes = array(), $excludes = array()) {
+	 	if(!is_array($includes)) {
 	 		$includes = array();
 	 	}
 	 	
-	 	if(!is_array($excludes))
-	 	{
+	 	if(!is_array($excludes)) {
 	 		$excludes = array();
 	 	}
 	 	
-	 	if(!empty($includes))
-	 	{
-	 		foreach($includes as $col)
-	 		{
+	 	if(!empty($includes)) {
+	 		foreach($includes as $col) {
 	 			$this->selects[$col] = 1;
 	 		}
 	 	}
-	 	else
-	 	{
-	 		foreach($excludes as $col)
-	 		{
+	 	else {
+	 		foreach($excludes as $col) {
 	 			$this->selects[$col] = 0;
 	 		}
 	 	}
@@ -139,10 +125,8 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where(array('foo' => 'bar'))->get('foobar');
 	 */
 	 
-	 public function where($wheres = array())
-	 {
-	 	foreach($wheres as $wh => $val)
-	 	{
+	 public function where($wheres = array()) {
+	 	foreach($wheres as $wh => $val)	{
 	 		$this->wheres[$wh] = $val;
 	 	}
 	 	return($this);
@@ -158,8 +142,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_in('foo', array('bar', 'zoo', 'blah'))->get('foobar');
 	 */
 	 
-	 public function where_in($field = "", $in = array())
-	 {
+	 public function where_in($field = "", $in = array()) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$in'] = $in;
 	 	return($this);
@@ -175,8 +158,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_not_in('foo', array('bar', 'zoo', 'blah'))->get('foobar');
 	 */
 	 
-	 public function where_not_in($field = "", $in = array())
-	 {
+	 public function where_not_in($field = "", $in = array()) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$nin'] = $in;
 	 	return($this);
@@ -192,8 +174,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_gt('foo', 20);
 	 */
 	 
-	 public function where_gt($field = "", $x)
-	 {
+	 public function where_gt($field = "", $x) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$gt'] = $x;
 	 	return($this);
@@ -209,8 +190,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_gte('foo', 20);
 	 */
 	 
-	 public function where_gte($field = "", $x)
-	 {
+	 public function where_gte($field = "", $x) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$gte'] = $x;
 	 	return($this);
@@ -226,8 +206,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_lt('foo', 20);
 	 */
 	 
-	 public function where_lt($field = "", $x)
-	 {
+	 public function where_lt($field = "", $x) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$lt'] = $x;
 	 	return($this);
@@ -243,8 +222,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_lte('foo', 20);
 	 */
 	 
-	 public function where_lte($field = "", $x)
-	 {
+	 public function where_lte($field = "", $x) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$lte'] = $x;
 	 	return($this);
@@ -260,8 +238,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_between('foo', 20, 30);
 	 */
 	 
-	 public function where_between($field = "", $x, $y)
-	 {
+	 public function where_between($field = "", $x, $y)	 {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$gte'] = $x;
 	 	$this->wheres[$field]['$lte'] = $y;
@@ -278,8 +255,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_between_ne('foo', 20, 30);
 	 */
 	 
-	 public function where_between_ne($field = "", $x, $y)
-	 {
+	 public function where_between_ne($field = "", $x, $y) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$gt'] = $x;
 	 	$this->wheres[$field]['$lt'] = $y;
@@ -296,8 +272,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_between('foo', 20, 30);
 	 */
 	 
-	 public function where_ne($field = "", $x)
-	 {
+	 public function where_ne($field = "", $x) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$ne'] = $x;
 	 	return($this);
@@ -313,8 +288,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_or('foo', array( 'foo', 'bar', 'blegh' );
 	 */
 	 
-	 public function where_or($field = "", $values)
-	 {
+	 public function where_or($field = "", $values) {
 	 	$this->where_init($field);
 	 	$this->wheres[$field]['$or'] = $values;
 	 	return($this);
@@ -363,8 +337,7 @@ class Mongo_db
 	*	@usage : $this->mongo_db->where_size('foo', 1)->get('foobar');
 	*/
 	
-	public function where_size($field = "", $size = "")
-	{
+	public function where_size($field = "", $size = "")	{
 		$this->_where_init($field);
 		$this->wheres[$field]['$size'] = $size;
 		return ($this);
@@ -400,20 +373,17 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->like('foo', 'bar', 'im', FALSE, TRUE);
 	 */
 	 
-	 public function like($field = "", $value = "", $flags = "i", $enable_start_wildcard = TRUE, $enable_end_wildcard = TRUE)
-	 {
+	 public function like($field = "", $value = "", $flags = "i", $enable_start_wildcard = TRUE, $enable_end_wildcard = TRUE) {
 	 	$field = (string) trim($field);
 	 	$this->where_init($field);
 	 	$value = (string) trim($value);
 	 	$value = quotemeta($value);
 	 	
-	 	if($enable_start_wildcard !== TRUE)
-	 	{
+	 	if($enable_start_wildcard !== TRUE)	{
 	 		$value = "^" . $value;
 	 	}
 	 	
-	 	if($enable_end_wildcard !== TRUE)
-	 	{
+	 	if($enable_end_wildcard !== TRUE) {
 	 		$value .= "$";
 	 	}
 	 	
@@ -434,16 +404,12 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->where_between('foo', 20, 30);
 	 */
 	 
-	 public function order_by($fields = array())
-	 {
-	 	foreach($fields as $col => $val)
-	 	{
-	 		if($val == -1 || $val === FALSE || strtolower($val) == 'desc')
-	 		{
+	 public function order_by($fields = array()) {
+	 	foreach($fields as $col => $val) {
+	 		if($val == -1 || $val === FALSE || strtolower($val) == 'desc') {
 	 			$this->sorts[$col] = -1; 
 	 		}
-	 		else
-	 		{
+	 		else {
 	 			$this->sorts[$col] = 1;
 	 		}
 	 	}
@@ -461,8 +427,7 @@ class Mongo_db
 	 */
 	 
 	 public function limit($x = 99999) {
-	 	if($x !== NULL && is_numeric($x) && $x >= 1)
-	 	{
+	 	if($x !== NULL && is_numeric($x) && $x >= 1) {
 	 		$this->limit = (int) $x;
 	 	}
 	 	return($this);
@@ -478,10 +443,8 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->offset($x);
 	 */
 	 
-	 public function offset($x = 0)
-	 {
-	 	if($x !== NULL && is_numeric($x) && $x >= 1)
-	 	{
+	 public function offset($x = 0) {
+	 	if($x !== NULL && is_numeric($x) && $x >= 1) {
 	 		$this->offset = (int) $x;
 	 	}
 	 	return($this);
@@ -497,8 +460,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->get_where('foo', array('bar' => 'something'));
 	 */
 	
-	 public function get_where($collection = "", $where = array(), $limit = 99999)
-	 {
+	 public function get_where($collection = "", $where = array(), $limit = 99999) {
 	 	return($this->where($where)->limit($limit)->get($collection));
 	 }
 	 
@@ -512,10 +474,8 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->get('foo', array('bar' => 'something'));
 	 */
 	
-	 public function get($collection = "")
-	 {
-	 	if(empty($collection))
-	 	{
+	 public function get($collection = "") {
+	 	if(empty($collection)) {
 	 		show_error("In order to retreive documents from MongoDB, a collection name must be passed", 500);
 	 	}
 	 	$results = array();
@@ -541,10 +501,8 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->get('foo');
 	 */
 	 
-	 public function count($collection = "")
-	 {
-	 	if(empty($collection))
-	 	{
+	 public function count($collection = "") {
+	 	if(empty($collection)) {
 	 		show_error("In order to retreive a count of documents from MongoDB, a collection name must be passed", 500);
 	 	}
 	 	$count = $this->db->{$collection}->find($this->wheres)->limit((int) $this->limit)->skip((int) $this->offset)->count();
@@ -563,26 +521,22 @@ class Mongo_db
 	 */
 	
 	 public function insert($collection = "", $data = array()) {
-	 	if(empty($collection))
-	 	{
+	 	if(empty($collection)) {
 	 		show_error("No Mongo collection selected to insert into", 500);
 	 	}
 	 	
-	 	if(count($data) == 0 || !is_array($data))
-	 	{
+	 	if(count($data) == 0 || !is_array($data)) {
 	 		show_error("Nothing to insert into Mongo collection or insert is not an array", 500);
 	 	}
 	 	
-	 	try
-	 	{
+	 	try	{
 	 		$this->db->{$collection}->insert($data, array('fsync' => TRUE));
 	 		if(isset($insert['_id']))
 	 			return($insert['_id']);
 	 		else
 	 			return(FALSE);
 	 	}
-	 	catch(MongoCursorException $e)
-	 	{
+	 	catch(MongoCursorException $e) {
 	 		show_error("Insert of data into MongoDB failed: {$e->getMessage()}", 500);
 	 	}
 	 	
@@ -598,25 +552,20 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->update('foo', $data = array());
 	 */
 	
-	 public function update($collection = "", $data = array())
-	 {
-	 	if(empty($collection))
-	 	{
+	 public function update($collection = "", $data = array()) {
+	 	if(empty($collection)) {
 	 		show_error("No Mongo collection selected to update", 500);
 	 	}
 	 	
-	 	if(count($data) == 0 || !is_array($data))
-	 	{
+	 	if(count($data) == 0 || !is_array($data)) {
 	 		show_error("Nothing to update in Mongo collection or update is not an array", 500);
-	  }
+		}
 	 	
-	 	try
-	 	{
+	 	try	{
 	 		$this->db->{$collection}->update($this->wheres, array('$set' => $data), array('fsync' => TRUE, 'multiple' => FALSE));
 	 		return(TRUE);
 	 	} 
-	 	catch(MongoCursorException $e)
-	 	{
+	 	catch(MongoCursorException $e) {
 	 		show_error("Update of data into MongoDB failed: {$e->getMessage()}", 500);
 	 	}
 	 	
@@ -633,23 +582,19 @@ class Mongo_db
 	 */
 	
 	 public function update_all($collection = "", $data = array()) {
-	 	if(empty($collection))
-	 	{
+	 	if(empty($collection)) {
 	 		show_error("No Mongo collection selected to update", 500);
 	 	}
 	 	
-	 	if(count($data) == 0 || !is_array($data))
-	 	{
+	 	if(count($data) == 0 || !is_array($data)) {
 	 		show_error("Nothing to update in Mongo collection or update is not an array", 500);
 	 	}
 	 	
-	 	try
-	 	{
+	 	try {
 	 		$this->db->{$collection}->update($this->wheres, array('$set' => $data), array('fsync' => TRUE, 'multiple' => TRUE));
 	 		return(TRUE);
 	 	} 
-	 	catch(MongoCursorException $e)
-	 	{
+	 	catch(MongoCursorException $e) {
 	 		show_error("Update of data into MongoDB failed: {$e->getMessage()}", 500);
 	 	}
 	 	
@@ -665,20 +610,16 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->delete('foo', $data = array());
 	 */
 	
-	 public function delete($collection = "")
-	 {
-	 	if(empty($collection))
-	 	{
+	 public function delete($collection = "") {
+	 	if(empty($collection)) {
 	 		show_error("No Mongo collection selected to delete from", 500);
 	 	}
 	 	
-	 	try
-	 	{
+	 	try {
 	 		$this->db->{$collection}->remove($this->wheres, array('fsync' => TRUE, 'justOne' => TRUE));
 	 		return(TRUE);
 	 	}
-	 	catch(MongoCursorException $e)
-	 	{
+	 	catch(MongoCursorException $e) {
 	 		show_error("Delete of data into MongoDB failed: {$e->getMessage()}", 500);
 	 	}
 	 	
@@ -694,24 +635,19 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->delete_all('foo', $data = array());
 	 */
 	
-  public function delete_all($collection = "")
-  {
-     if(empty($collection))
-     {
-	     show_error("No Mongo collection selected to delete from", 500);
-	 	 }
+	public function delete_all($collection = "") {
+		if(empty($collection)) {
+			show_error("No Mongo collection selected to delete from", 500);
+		}
 	 	
-	 	try
-	 	{
+	 	try {
 	 		$this->db->{$collection}->remove($this->wheres, array('fsync' => TRUE, 'justOne' => FALSE));
 	 		return(TRUE);
 	 	}
-	 	catch(MongoCursorException $e)
-	 	{
+	 	catch(MongoCursorException $e) {
 	 		show_error("Delete of data into MongoDB failed: {$e->getMessage()}", 500);
 	 	}
-	 	
-  }
+	}
 	
 	/**
 	 *	--------------------------------------------------------------------------------
@@ -725,37 +661,29 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->add_index($collection, array('first_name' => 'ASC', 'last_name' => -1), array('unique' => TRUE));
 	 */
 	
-	public function add_index($collection = "", $keys = array(), $options = array())
-	{
-		if(empty($collection))
-		{
+	public function add_index($collection = "", $keys = array(), $options = array()) {
+		if(empty($collection)) {
 	 		show_error("No Mongo collection specified to add index to", 500);
 	 	}
 	 	
-	 	if(empty($keys) || !is_array($keys))
-	 	{
+	 	if(empty($keys) || !is_array($keys)) {
 	 		show_error("Index could not be created to MongoDB Collection because no keys were specified", 500);
-    }
+		}
   
-	 	foreach($keys as $col => $val)
-	 	{
-	 		if($val == -1 || $val === FALSE || strtolower($val) == 'desc')
-	 		{
+	 	foreach($keys as $col => $val) {
+	 		if($val == -1 || $val === FALSE || strtolower($val) == 'desc') {
 	 			$keys[$col] = -1; 
 	 		}
-	 		else
-	 		{
+	 		else {
 	 			$keys[$col] = 1;
 	 		}
 	 	}
 	 	
-	 	if($this->db->{$collection}->ensureIndex($keys, $options) == TRUE)
-	 	{
+	 	if($this->db->{$collection}->ensureIndex($keys, $options) == TRUE) {
 	 		$this->clear();
 	 		return($this);
 	 	}
-	 	else
-	 	{
+	 	else {
 	 		show_error("An error occured when trying to add an index to MongoDB Collection", 500);
 		}
 	}
@@ -774,25 +702,20 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->remove_index($collection, array('first_name' => 'ASC', 'last_name' => -1));
 	 */
 	
-	public function remove_index($collection = "", $keys = array())
-	{
-		if(empty($collection))
-		{
+	public function remove_index($collection = "", $keys = array()) {
+		if(empty($collection)) {
 	 		show_error("No Mongo collection specified to remove index from", 500);
 	 	}
 	 	
-	 	if(empty($keys) || !is_array($keys))
-	 	{
+	 	if(empty($keys) || !is_array($keys)) {
 	 		show_error("Index could not be removed from MongoDB Collection because no keys were specified", 500);
 	 	}
 	 	
-	 	if($this->db->{$collection}->deleteIndex($keys, $options) == TRUE)
-	 	{
+	 	if($this->db->{$collection}->deleteIndex($keys, $options) == TRUE) {
 	 		$this->clear();
 	 		return($this);
 	 	}
-	 	else
-	 	{
+	 	else {
 	 		show_error("An error occured when trying to remove an index from MongoDB Collection", 500);
 		}
 	}
@@ -808,8 +731,7 @@ class Mongo_db
 	 */
 	
 	public function remove_all_indexes($collection = "") {
-		if(empty($collection))
-		{
+		if(empty($collection)) {
 	 		show_error("No Mongo collection specified to remove all indexes from", 500);
 	 	}
 	 	
@@ -828,8 +750,7 @@ class Mongo_db
 	 *	@usage = $this->mongo_db->list_indexes($collection);
 	 */
 	public function list_indexes($collection = "") {
-		if(empty($collection))
-		{
+		if(empty($collection)) {
 	 		show_error("No Mongo collection specified to remove all indexes from", 500);
 	 	}
 	 	return($this->db->{$collection}->getIndexInfo());
@@ -844,15 +765,13 @@ class Mongo_db
 	 *  can have some very large issues in production!
 	 */
 	 
-	 public function drop_collection($collection = "")
-	 {
-	   if(empty($collection))
-		 {
-	     show_error("No Mongo collection specified to drop from database", 500);
-	   }
-	   $this->db->{$collection}->drop();
-	   return TRUE;
-	 }
+	public function drop_collection($collection = "") {
+		if(empty($collection)){
+			show_error("No Mongo collection specified to drop from database", 500);
+		}
+		$this->db->{$collection}->drop();
+		return TRUE;
+	}
 	 
 
 	/**
@@ -868,19 +787,16 @@ class Mongo_db
 	
 	private function connect() {
 		$options = array();
-		if($this->persist === TRUE)
-		{
+		if($this->persist === TRUE) {
 			$options['persist'] = isset($this->persist_key) && !empty($this->persist_key) ? $this->persist_key : 'ci_mongo_persist';
 		}
 		
-		try
-		{
+		try {
 			$this->connection = new Mongo($this->connection_string, $options);
 			$this->db = $this->connection->{$this->dbname};
 			return($this);	
 		} 
-		catch(MongoConnectionException $e)
-		{
+		catch(MongoConnectionException $e) {
 			show_error("Unable to connect to MongoDB: {$e->getMessage()}", 500);
 		}
 	}
@@ -893,8 +809,7 @@ class Mongo_db
 	 *	Build the connection string from the config file.
 	 */
 	
-	private function connection_string() 
-	{
+	private function connection_string() {
 		$this->CI->config->load($this->config_file);
 		
 		$this->host = trim($this->CI->config->item('mongo_host'));
@@ -907,27 +822,22 @@ class Mongo_db
 		
 		$connection_string = "mongodb://";
 		
-		if(empty($this->host))
-		{
+		if(empty($this->host)) {
 			show_error("The Host must be set to connect to MongoDB", 500);
 		}
 		
-		if(empty($this->dbname))
-		{
+		if(empty($this->dbname)) {
 			show_error("The Database must be set to connect to MongoDB", 500);
 		}
 		
-		if(!empty($this->user) && !empty($this->pass))
-		{
+		if(!empty($this->user) && !empty($this->pass)) {
 			$connection_string .= "{$this->user}:{$this->pass}@";
 		}
 		
-		if(isset($this->port) && !empty($this->port))
-		{
+		if(isset($this->port) && !empty($this->port)) {
 			$connection_string .= "{$this->host}:{$this->port}";
 		}
-		else
-		{
+		else {
 			$connection_string .= "{$this->host}";
 		}
 		
@@ -942,8 +852,7 @@ class Mongo_db
 	 *	Resets the class variables to default settings
 	 */
 	
-	private function clear()
-	{
+	private function clear() {
 		$this->selects = array();
 		$this->wheres = array();
 		$this->limit = NULL;
@@ -959,12 +868,9 @@ class Mongo_db
 	 *	Prepares parameters for insertion in $wheres array().
 	 */
 	
-	private function where_init($param) 
-	{
-		if(!isset($this->wheres[$param]))
-		{
+	private function where_init($param) {
+		if(!isset($this->wheres[$param])) {
 			$this->wheres[$param] = array();
-	  }
+		}
 	}
-	
 }

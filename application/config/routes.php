@@ -37,9 +37,20 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-
-$route['default_controller'] = "welcome";
+$route['default_controller'] = "home";
 $route['404_override'] = '';
+
+// Server/Database/Collection
+$route['db/(:any)/(:any)/(:any)'] = 'databases/index/$1/$2/$3';
+
+// Server/Database
+$route['db/(:any)/(:any)'] = 'databases/index/$1/$2';
+
+// Server
+$route['db/(:any)'] = 'databases/index/$1';
+
+
+
 
 
 /* End of file routes.php */
