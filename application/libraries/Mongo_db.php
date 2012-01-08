@@ -18,6 +18,7 @@ class Mongo_db {
 	
 	private $CI;
 	private $config_file = 'mongo';
+	private $default_server = 'default';
 	
 	private $connection;
 	private $db;
@@ -47,12 +48,12 @@ class Mongo_db {
 	 *	Generate the connection string and establish a connection to the MongoDB.
 	 */
 	
-	public function __construct(){
+	public function __construct($config = array()){
 		if(!class_exists('Mongo')){
 			show_error("The MongoDB PECL extension has not been installed or enabled", 500);
 		}
 		$this->CI =& get_instance();
-		$this->connection_string();
+		$this->connection_string($config);
 		$this->connect();
 	}
 	
@@ -772,7 +773,27 @@ class Mongo_db {
 		$this->db->{$collection}->drop();
 		return TRUE;
 	}
-	 
+	
+	public function getDatabases(){
+		return $this->connection->listDBs();
+		//return $this->command(array("listDatabases" => 1),'admin');
+	}
+	
+	public function getCollections(){
+		
+		if(empty($this->dbname)) {
+			show_error("The Database must be set to connect to MongoDB", 500,'Unable to get collections list');
+		}
+		
+		return $this->connection->{$this->dbname}->listCollections();
+	}
+	
+	public function command($command,$database=false){
+		if($database){
+			return $this->connection->{$database}->command($command);
+		}
+		return $this->connection->command($command);
+	}
 
 	/**
 	 *	--------------------------------------------------------------------------------
@@ -793,7 +814,9 @@ class Mongo_db {
 		
 		try {
 			$this->connection = new Mongo($this->connection_string, $options);
-			$this->db = $this->connection->{$this->dbname};
+			if($this->dbname){
+				$this->db = $this->connection->{$this->dbname};
+			}
 			return($this);	
 		} 
 		catch(MongoConnectionException $e) {
@@ -809,26 +832,34 @@ class Mongo_db {
 	 *	Build the connection string from the config file.
 	 */
 	
-	private function connection_string() {
-		$this->CI->config->load($this->config_file);
+	public function connection_string($config = array()) {
 		
-		$this->host = trim($this->CI->config->item('mongo_host'));
-		$this->port = trim($this->CI->config->item('mongo_port'));
-		$this->user = trim($this->CI->config->item('mongo_user'));
-		$this->pass = trim($this->CI->config->item('mongo_pass'));
-		$this->dbname = trim($this->CI->config->item('mongo_db'));
-		$this->persist = trim($this->CI->config->item('mongo_persist'));
-		$this->persist_key = trim($this->CI->config->item('mongo_persist_key'));
+		if(isset($config['config_file'])) $this->config_file = $config['config_file'];
+		if(isset($config['server'])) $this->default_server = $config['server'];
+		if(isset($config['database'])) $this->dbname = $config['database'];
+		
+		//var_dump($this->default_server,$this->config_file);
+		
+		$this->CI->config->load($this->config_file);
+		$config = $this->CI->config->item($this->default_server,$this->config_file);
+		
+		$this->host = trim($config['host']);
+		$this->port = trim($config['port']);
+		$this->user = trim($config['username']);
+		$this->pass = trim($config['password']);
+		//$this->dbname = trim($config['database']);
+		//$this->persist = trim($config['pconnect']);
+		//$this->persist_key = trim($config['pconnect_key']);
 		
 		$connection_string = "mongodb://";
 		
 		if(empty($this->host)) {
 			show_error("The Host must be set to connect to MongoDB", 500);
 		}
-		
-		if(empty($this->dbname)) {
-			show_error("The Database must be set to connect to MongoDB", 500);
-		}
+		// TODO: FTW???
+		//if(empty($this->dbname)) {
+		//	show_error("The Database must be set to connect to MongoDB", 500);
+		//}
 		
 		if(!empty($this->user) && !empty($this->pass)) {
 			$connection_string .= "{$this->user}:{$this->pass}@";

@@ -40,11 +40,14 @@
 $route['default_controller'] = "home";
 $route['404_override'] = '';
 
+// Server/Database/Collection/Action
+$route['db/(:any)/(:any)/(:any)/(:any)'] = 'action/index/$1/$2/$3/$4';
+
 // Server/Database/Collection
-$route['db/(:any)/(:any)/(:any)'] = 'databases/index/$1/$2/$3';
+$route['db/(:any)/(:any)/(:any)'] = 'collection/index/$1/$2/$3';
 
 // Server/Database
-$route['db/(:any)/(:any)'] = 'databases/index/$1/$2';
+$route['db/(:any)/(:any)'] = 'database/index/$1/$2';
 
 // Server
 $route['db/(:any)'] = 'databases/index/$1';

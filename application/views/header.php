@@ -20,7 +20,7 @@
 	      <a class="brand" href="<?php echo site_url();?>">CiMongo</a>
 	      <ul class="nav">
 	      	<li class="dropdown" data-dropdown="dropdown" >
-	      		<a href="#" class="dropdown-toggle">Server <?php if(isset($this->server)) echo '('.$this->server.')';?></a>
+	      		<a href="#" class="dropdown-toggle"><span class="icon-server"></span>Server <?php if(isset($this->server)) echo '('.$this->server.')';?></a>
 	      		<ul class="dropdown-menu">
 	      			<?php
 	      			$mongo_servers = $this->config->item('mongo');
@@ -41,5 +41,27 @@
 	    </div>
 	  </div>
 	</div>
-	    
-	<div class="container">
+	<div class="container-fluid">
+		<?php
+		if(isset($this->databases) && $this->databases){?>
+		<div class="sidebar" style="border: 0px solid red;">
+			<ul style="zoom: 1;padding: 0;margin:0;">
+			<?php
+			foreach($this->databases as $dbname=>$dbsize){
+				echo '<li '.($dbname==$this->database?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname).'"><img src="/i/database.png"> '.$dbname.'</a>';
+				if($dbname==$this->database && isset($this->collections[$dbname])){
+					echo '<ul style="list-style: none;">';
+					foreach($this->collections[$dbname] as $colname=>$colsize){
+						echo '<li '.($colname==$this->collection?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname.'/'.$colname).'"><img src="/i/collection.png"> '.$colname.'</a>';
+					}
+					echo '</ul>';
+					
+				}
+				
+				echo '</li>';
+			}
+			?>
+			</ul>
+		</div>
+		<?php } ?>
+		<div class="content">

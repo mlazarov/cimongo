@@ -1,3 +1,22 @@
 body {
 	padding-top: 60px;
 }
+.container-fluid{
+	min-height: 600px;
+}
+.container-fluid > .sidebar  {
+	width: 220px;
+	left: 2px;
+	padding:	5px;
+}
+
+.icon-server{
+	background-image: url(../i/server.png);
+	padding-left:	20px;
+	background-position: left center;
+	background-repeat: no-repeat;
+}
+.sidebar{
+	height:	80%;
+	overflow: auto;
+}

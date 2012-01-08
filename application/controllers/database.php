@@ -1,16 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Databases extends MY_Controller {
+class Database extends MY_Controller {
 	
-	var $title = "Databases";
+	var $title = "Database";
 	
-	public function Index($server='default'){
+	public function Index($server='default',$database){
 		//$this->getDatabases();
 		//var_dump($this->databases);
-		//$this->getCollections();
+		$this->getCollections('testdb');
 		//var_dump($this->collections[$this->database]);
 		//exit;
-		//$this->load->view('default');
 		$this->load->view('database/index');
 	}
 
