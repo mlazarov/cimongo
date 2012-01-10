@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$config['mongo']['default']['host'] = 'localhost';
+$config['mongo']['default']['host'] = 'mongodb';
 $config['mongo']['default']['port'] = 27017;
 $config['mongo']['default']['username'] = '';
 $config['mongo']['default']['password'] = '';

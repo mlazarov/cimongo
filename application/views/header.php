@@ -48,7 +48,7 @@
 			<ul style="zoom: 1;padding: 0;margin:0;">
 			<?php
 			foreach($this->databases as $dbname=>$dbsize){
-				echo '<li '.($dbname==$this->database?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname).'"><img src="/i/database.png"> '.$dbname.'</a>';
+				echo '<li '.($dbname==$this->database?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname).'"><img src="'.site_url('/i/database.png').'"> '.$dbname.'</a>';
 				if($dbname==$this->database && isset($this->collections[$dbname])){
 					echo '<ul style="list-style: none;">';
 					foreach($this->collections[$dbname] as $colname=>$colsize){
