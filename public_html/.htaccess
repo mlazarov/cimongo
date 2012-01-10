@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    #RewriteBase /
     RewriteCond %{REQUEST_URI} ^system.*
     RewriteRule ^(.*)$ /index.php?/$1 [L]
 
