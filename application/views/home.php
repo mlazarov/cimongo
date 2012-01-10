@@ -16,7 +16,6 @@ $this->load->view('header');
 
 		<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>
 	</div>
-
 <?php
 
 $this->load->view('footer');

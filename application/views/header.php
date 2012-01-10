@@ -45,20 +45,20 @@
 		<?php
 		if(isset($this->databases) && $this->databases){?>
 		<div class="sidebar" style="border: 0px solid red;">
-			<ul style="zoom: 1;padding: 0;margin:0;">
+			<ul class="databases">
 			<?php
 			foreach($this->databases as $dbname=>$dbsize){
-				echo '<li '.($dbname==$this->database?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname).'"><img src="'.site_url('/i/database.png').'"> '.$dbname.'</a>';
+				echo '<li class="database"'.($dbname==$this->database?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname).'">'.$dbname.'</a>';
 				if($dbname==$this->database && isset($this->collections[$dbname])){
-					echo '<ul style="list-style: none;">';
+					echo '<ul class="collections">';
 					foreach($this->collections[$dbname] as $colname=>$colsize){
-						echo '<li '.($colname==$this->collection?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname.'/'.$colname).'"><img src="/i/collection.png"> '.$colname.'</a>';
+						echo '<li class="collection"'.($colname==$this->collection?'style="font-weight:bold;"':'').'><a href="'.site_url('db/'.$this->server.'/'.$dbname.'/'.$colname).'">'.$colname."</a></li>\n";
 					}
-					echo '</ul>';
+					echo "</ul>\n";
 					
 				}
 				
-				echo '</li>';
+				echo "</li>\n";
 			}
 			?>
 			</ul>

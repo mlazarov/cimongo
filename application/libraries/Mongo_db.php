@@ -651,6 +651,32 @@ class Mongo_db {
 	}
 	
 	/**
+	*	--------------------------------------------------------------------------------
+	*	//! Command
+	*	--------------------------------------------------------------------------------
+	*
+	*	Runs a MongoDB command (such as GeoNear). See the MongoDB documentation for more usage scenarios:
+	*	http://dochub.mongodb.org/core/commands
+	*
+	*	@usage : $this->mongo_db->command(array('geoNear'=>'buildings', 'near'=>array(53.228482, -0.547847), 'num' => 10, 'nearSphere'=>true));
+	*/
+	
+	public function command($query = array(),$database=false){
+		//print_r($query);
+		try	{
+			
+			if($database){
+				return $this->connection->{$database}->command($query);
+			}else{
+				//return $this->connection->command($query);
+			}
+		}
+		catch (MongoCursorException $e) {
+			show_error("MongoDB command failed to execute: {$e->getMessage()}", 500);
+		}
+	}
+	
+	/**
 	 *	--------------------------------------------------------------------------------
 	 *	ADD_INDEX
 	 *	--------------------------------------------------------------------------------
@@ -788,12 +814,6 @@ class Mongo_db {
 		return $this->connection->{$this->dbname}->listCollections();
 	}
 	
-	public function command($command,$database=false){
-		if($database){
-			return $this->connection->{$database}->command($command);
-		}
-		return $this->connection->command($command);
-	}
 
 	/**
 	 *	--------------------------------------------------------------------------------

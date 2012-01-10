@@ -2,14 +2,15 @@
 
 class MY_Controller extends CI_Controller{
 	
+	var $title = '';
+	
 	var $server = 'default';
 	var $database = false;
 	var $collection = false;
 	var $action = false;
-	
-	var $databases = false;
-	
-	var $title = '';
+		
+	var $databases = array();
+	var $collections = array();
 	
 	function __construct(){
 		parent::__construct();
@@ -59,9 +60,6 @@ class MY_Controller extends CI_Controller{
 				$this->databases[$database['name']] = $database['sizeOnDisk'];
 			}
 		}
-		for($i=1;$i<=10;$i++){
-			$this->databases[$i] = $i;
-		}
 		ksort($this->databases);
 		
 	}
@@ -72,7 +70,7 @@ class MY_Controller extends CI_Controller{
 		//exit;
 		foreach($result as $res){
 			list ($dbname, $collection) = explode('.',(string)$res);
-			$this->collections[$this->database][$collection] = 1;
+			$this->collections[$this->database][$collection]['indexes'] = $res->getIndexInfo();
 		}
 	}
 
