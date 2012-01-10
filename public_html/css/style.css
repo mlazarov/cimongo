@@ -20,3 +20,51 @@ body {
 	height:	80%;
 	overflow: auto;
 }
+
+ul.databases{
+	zoom: 1;
+	padding: 0;
+	margin:0;
+}
+
+ul.databases li{
+	line-height: 22px;
+	display: block;
+	margin-top: 5px;
+}
+ul.databases li:after{
+	clear: both;
+	
+}
+ul.databases li.database{
+	margin-top: 9px;
+	line-height: 16px;	
+	background-image: url(../i/database.png);
+	padding-left:	20px;
+	background-position: left top;
+	background-repeat: no-repeat;
+}
+ul.databases li.collection{
+	line-height: 16px;	
+	background-image: url(../i/collection.png);
+	padding-left:	20px;
+	background-position: left top;
+	background-repeat: no-repeat;
+}
+ul.databases li.collection a{
+	color: #004499;
+}
+
+ul.collections{
+	list-style: none;
+	margin:	0px;
+}
+
+.mytable th {
+    background-color: #CCCCCC;
+}
+
+table.mytable td:first-child{
+	width: 200px;
+	
+}
